@@ -33,42 +33,42 @@ commands:
             sudo add-apt-repository --yes --update ppa:ansible/ansible
             sudo apt install ansible -y
   
-  # destroy-environment:
-  #   description: Destroy back-end and front-end cloudformation stacks given a workflow ID.
-  #   parameters:
-  #     Workflow_ID:
-  #       type: string
-  #       default: ${CIRCLE_WORKFLOW_ID:0:7}   
-  #   steps:
-  #     - run:
-  #         name: Destroy environments
-  #         when: on_fail
-  #         command: |
-  #           echo "Destroying environment: ${CIRCLE_WORKFLOW_ID:0:7} "
-  #           aws cloudformation delete-stack --stack-name udapeople-backend-${CIRCLE_WORKFLOW_ID:0:7}
-  #           aws s3 rm s3://udapeople-${CIRCLE_WORKFLOW_ID:0:7} --recursive
-  #           aws cloudformation delete-stack --stack-name udapeople-frontend-${CIRCLE_WORKFLOW_ID:0:7}
-  #           #exit 1
-  # revert-migrations:
-  #   description: Revert the last migration if successfully run in the current workflow.
-  #   parameters:
-  #     Workflow_ID:
-  #       type: string
-  #       default: ${CIRCLE_WORKFLOW_ID:0:7}    
-  #   steps:
-  #     - run:
-  #         name: Revert migrations
-  #         when: on_fail
-  #         command: |
-  #           SUCCESS=$(curl --insecure  https://kvdb.io/${KVDB_BUCKET}/migration_${CIRCLE_WORKFLOW_ID:0:7})
-  #           # SUCCESS = 1
-  #           if(( $SUCCESS==1 )); 
-  #           then
-  #             cd ~/project/backend
-  #             npm install
-  #             npm run migration:revert
-  #             #exit 1
-  #           fi
+  destroy-environment:
+    description: Destroy back-end and front-end cloudformation stacks given a workflow ID.
+    parameters:
+      Workflow_ID:
+        type: string
+        default: ${CIRCLE_WORKFLOW_ID:0:7}   
+    steps:
+      - run:
+          name: Destroy environments
+          when: on_fail
+          command: |
+            echo "Destroying environment: ${CIRCLE_WORKFLOW_ID:0:7} "
+            aws cloudformation delete-stack --stack-name udapeople-backend-${CIRCLE_WORKFLOW_ID:0:7}
+            aws s3 rm s3://udapeople-${CIRCLE_WORKFLOW_ID:0:7} --recursive
+            aws cloudformation delete-stack --stack-name udapeople-frontend-${CIRCLE_WORKFLOW_ID:0:7}
+            #exit 1
+  revert-migrations:
+    description: Revert the last migration if successfully run in the current workflow.
+    parameters:
+      Workflow_ID:
+        type: string
+        default: ${CIRCLE_WORKFLOW_ID:0:7}    
+    steps:
+      - run:
+          name: Revert migrations
+          when: on_fail
+          command: |
+            SUCCESS=$(curl --insecure  https://kvdb.io/${KVDB_BUCKET}/migration_${CIRCLE_WORKFLOW_ID:0:7})
+            # SUCCESS = 1
+            if(( $SUCCESS==1 )); 
+            then
+              cd ~/project/backend
+              npm install
+              npm run migration:revert
+              #exit 1
+            fi
             
 jobs:
   build-frontend:
@@ -246,8 +246,8 @@ jobs:
           paths:
             - project/.circleci/ansible/inventory.txt
       
-      # - revert-migrations
-      # - destroy-environment
+      - revert-migrations
+      - destroy-environment
       # Here's where you will add some code to rollback on failure      
 
   configure-infrastructure:
@@ -279,7 +279,7 @@ jobs:
             cat inventory.txt
             ansible-playbook -i inventory.txt configure-server.yml
             
-      # - destroy-environment
+      - destroy-environment
       # Here's where you will add some code to rollback on failure      
 
   # run-migrations:
@@ -413,8 +413,8 @@ workflows:
           filters:
             branches:
               only: [main]
-      # - configure-infrastructure:
-      #     requires: [deploy-infrastructure]
+      - configure-infrastructure:
+          requires: [deploy-infrastructure]
       # - run-migrations:
       #     requires: [configure-infrastructure]
       # - deploy-frontend:
