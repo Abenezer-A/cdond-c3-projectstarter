@@ -381,18 +381,26 @@ jobs:
             echo TYPEORM_MIGRATIONS_DIR=$TYPEORM_MIGRATIONS_DIR >> "backend/.env"
             echo NODE_ENV=production >> "backend/.env" 
             
+            # cd backend
+            # pwd
+            # ls -al
+            # npm install
+            # npm run build
+            # cd ..
+            # pwd
+            # ls -al
+            # # zip the directory
+            # tar -C backend -czvf artifact.tar.gz .
+            # cd .circleci/ansible
             cd backend
-            pwd
-            ls -al
-            npm install
+            npm i
             npm run build
             cd ..
-            pwd
-            ls -al
-            # zip the directory
-            tar -C backend -czvf artifact.tar.gz .
-            mkdir ~/backend-app_dir
             cd .circleci/ansible
+            mkdir files
+            cd files
+            tar -C ../../../backend -czvf artifact.tar.gz .
+            cd ../
             
             echo "Contents of the inventory.txt file is -------"
             cat inventory.txt
