@@ -251,136 +251,136 @@ jobs:
       # - destroy-environment
       # Here's where you will add some code to rollback on failure      
 
-  configure-infrastructure:
-    docker:
-      # Docker image here that supports Ansible
-    steps:
-      # Checkout code from git
-      # Add ssh keys with fingerprint
-      # attach workspace
-      - run:
-          name: Install dependencies
-          command: |
-            # Your code here
-            exit 1
-      - run:
-          name: Configure server
-          command: |
-            # Your code here
-            exit 1
-      # Here's where you will add some code to rollback on failure      
+#   configure-infrastructure:
+#     docker:
+#       # Docker image here that supports Ansible
+#     steps:
+#       # Checkout code from git
+#       # Add ssh keys with fingerprint
+#       # attach workspace
+#       - run:
+#           name: Install dependencies
+#           command: |
+#             # Your code here
+#             exit 1
+#       - run:
+#           name: Configure server
+#           command: |
+#             # Your code here
+#             exit 1
+#       # Here's where you will add some code to rollback on failure      
 
-  run-migrations:
-    docker:
-      # Docker image here that supports NodeJS
-    steps:
-      # Checkout code from git
-      - run:
-          name: Run migrations
-          command: |
-            # Your code here
-            exit 1
-      - run:
-          name: Send migration results to memstash
-          command: |
-            # Your code here
-            exit 1
-     # Here's where you will add some code to rollback on failure      
+#   run-migrations:
+#     docker:
+#       # Docker image here that supports NodeJS
+#     steps:
+#       # Checkout code from git
+#       - run:
+#           name: Run migrations
+#           command: |
+#             # Your code here
+#             exit 1
+#       - run:
+#           name: Send migration results to memstash
+#           command: |
+#             # Your code here
+#             exit 1
+#     # Here's where you will add some code to rollback on failure      
 
-  deploy-frontend:
-    docker:
-      # Docker image here that supports AWS CLI
-    steps:
-      # Checkout code from git
-      - run:
-          name: Install dependencies
-          command: |
-            # your code here
-      - run:
-          name: Get backend url
-          command: |
-            # your code here
-            export API_URL="http://${BACKEND_IP}:3030"
-            echo "${API_URL}"
-      - run:
-          name: Deploy frontend objects
-          command: |
-            # your code here
-      # Here's where you will add some code to rollback on failure      
+#   deploy-frontend:
+#     docker:
+#       # Docker image here that supports AWS CLI
+#     steps:
+#       # Checkout code from git
+#       - run:
+#           name: Install dependencies
+#           command: |
+#             # your code here
+#       - run:
+#           name: Get backend url
+#           command: |
+#             # your code here
+#             export API_URL="http://${BACKEND_IP}:3030"
+#             echo "${API_URL}"
+#       - run:
+#           name: Deploy frontend objects
+#           command: |
+#             # your code here
+#       # Here's where you will add some code to rollback on failure      
                     
-  deploy-backend:
-    docker:
-      # Docker image here that supports Ansible
-    steps:
-      # Checkout code from git
-      # Add ssh keys with fingerprint
-      # attach workspace
-      - run:
-          name: Install dependencies
-          command: |
-            # your code here
-      - run:
-          name: Deploy backend
-          command: |
-            # your code here
-      # Here's where you will add some code to rollback on failure  
+#   deploy-backend:
+#     docker:
+#       # Docker image here that supports Ansible
+#     steps:
+#       # Checkout code from git
+#       # Add ssh keys with fingerprint
+#       # attach workspace
+#       - run:
+#           name: Install dependencies
+#           command: |
+#             # your code here
+#       - run:
+#           name: Deploy backend
+#           command: |
+#             # your code here
+#       # Here's where you will add some code to rollback on failure  
 
-  smoke-test:
-    docker:
-      # Lightweight Docker image 
-    steps:
-      # Checkout code from git
-      - run:
-          name: Install dependencies
-          command: |
-            # your code here
-      - run:
-          name: Get backend url
-          command: |
-            # your code here
-      - run:
-          name: Backend smoke test.
-          command: |
-            # your code here
-      - run:
-          name: Frontend smoke test.
-          command: |
-            # your code here
-      # Here's where you will add some code to rollback on failure  
+#   smoke-test:
+#     docker:
+#       # Lightweight Docker image 
+#     steps:
+#       # Checkout code from git
+#       - run:
+#           name: Install dependencies
+#           command: |
+#             # your code here
+#       - run:
+#           name: Get backend url
+#           command: |
+#             # your code here
+#       - run:
+#           name: Backend smoke test.
+#           command: |
+#             # your code here
+#       - run:
+#           name: Frontend smoke test.
+#           command: |
+#             # your code here
+#       # Here's where you will add some code to rollback on failure  
 
-  cloudfront-update:
-    docker:
-      # Docker image here that supports AWS CLI
-    steps:
-      # Checkout code from git
-      - run:
-          name: Install dependencies
-          command: |
-            # your code here
-      - run:
-          name: Update cloudfront distribution
-          command: |
-            # your code here
-      # Here's where you will add some code to rollback on failure  
+#   cloudfront-update:
+#     docker:
+#       # Docker image here that supports AWS CLI
+#     steps:
+#       # Checkout code from git
+#       - run:
+#           name: Install dependencies
+#           command: |
+#             # your code here
+#       - run:
+#           name: Update cloudfront distribution
+#           command: |
+#             # your code here
+#       # Here's where you will add some code to rollback on failure  
 
-cleanup:
-    docker:
-      # Docker image here
-    steps:
-      # Checkout code from git
-      - run:
-          name: Get old stack workflow id
-          command: |
-            # your code here
-            export OldWorkflowID="the id here"
-            export STACKS=[] #put the list of stacks here
-      - run:
-          name: Remove old stacks and files
-          command: |
-            if [[ "${STACKS[@]}" =~ "${OldWorkflowID}" ]]
-            then
-              # your code here
-            fi
+# cleanup:
+#     docker:
+#       # Docker image here
+#     steps:
+#       # Checkout code from git
+#       - run:
+#           name: Get old stack workflow id
+#           command: |
+#             # your code here
+#             export OldWorkflowID="the id here"
+#             export STACKS=[] #put the list of stacks here
+#       - run:
+#           name: Remove old stacks and files
+#           command: |
+#             if [[ "${STACKS[@]}" =~ "${OldWorkflowID}" ]]
+#             then
+#               # your code here
+#             fi
             
 
 workflows:
@@ -400,7 +400,7 @@ workflows:
           requires: [test-frontend, test-backend, scan-frontend, scan-backend]
           filters:
             branches:
-              only: [test-feature-branch]
+              only: [main]
       # - configure-infrastructure:
       #     requires: [deploy-infrastructure]
       # - run-migrations:
