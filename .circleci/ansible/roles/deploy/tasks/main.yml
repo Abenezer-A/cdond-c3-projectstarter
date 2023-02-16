@@ -35,14 +35,14 @@
 
 - name: "Create Backend App Directory"
   file:
-    path: ~/backend-app
+    path: ~/backend-app_dir
     state: directory
     
 - name: "Copy artifact into Instance"
   become: true
   copy: 
     src: ~/project/artifact.tar.gz
-    dest: /home/ubuntu/backend-app/artifact.tar.gz
+    dest: /home/ubuntu/backend-app_dir/artifact.tar.gz
     
 - name: "start app"
   become: true
