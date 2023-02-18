@@ -504,6 +504,9 @@ jobs:
               --no-paginate --output text | grep -o '[^-]*$' )
             echo $OldWorkflowID >> ~/project/OldWorkflowID.txt
             cat ~/project/OldWorkflowID.txt
+            export STACKS=($(aws cloudformation list-stacks --query "StackSummaries[*].StackName" \
+              --stack-status-filter CREATE_COMPLETE --no-paginate --output text))
+            echo Stack names: "${STACKS[@]}"
       - persist_to_workspace:
           root: ~/
           paths:
