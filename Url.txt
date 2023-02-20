@@ -1,2 +1,2 @@
-[url-1] -  54.87.241.86
-[url-2] - http://udapeople-311f6e4.s3-website-us-east-1.amazonaws.com
+[url-1] -  54.196.28.163
+[url-2] - http://udapeople-6377189.s3-website-us-east-1.amazonaws.com
