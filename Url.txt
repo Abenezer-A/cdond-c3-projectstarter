@@ -1,5 +1,5 @@
 Github repository[URL01]: https://github.com/Abenezer-A/cdond-c3-projectstarter
-S3 Bucket[URL02]: 
-EC2 application backend[URL04]: http:///api/status
+S3 Bucket[URL02]: http://udapeople-bf86757.s3-website-us-east-1.amazonaws.com/#/employees
+EC2 application backend[URL04]: http://100.26.221.7:3030/api/status
 CloudFront[URL]: https://d3rqdmrytwet9.cloudfront.net
 Prometheus server[URL05]: ec2-44-201-209-171.compute-1.amazonaws.com
