@@ -1,2 +1,4 @@
-[url-1] -  54.196.28.163
-[url-2] - http://udapeople-6377189.s3-website-us-east-1.amazonaws.com
+Github repository[URL01]: https://github.com/Abenezer-A/cdond-c3-projectstarter
+S3 Bucket[URL02]: 
+EC2 application backend[URL04]: http:///api/status
+Prometheus server[URL05]: 
