@@ -417,38 +417,31 @@ jobs:
 
   smoke-test:
     docker:
-      # Lightweight Docker image 
-      - image: python:3.10-alpine3.16
+      - image: cimg/base:stable 
     steps:
-      # Checkout code from git
+      # Checkout code from git repo
       - checkout
+      - install_awscli
+      - install_nodejs
+      
+      
       - run:
-          name: Install dependencies
+          name: Backend smoke test.
           command: |
-           apk add --update --no-cache tar gzip nodejs npm curl aws-cli
-      - run:
-          name: Get backend url and Backend smoke test.
-          command: |
-            export BACKEND_IP=$(aws ec2 describe-instances \
-              --query "Reservations[*].Instances[*].[PublicIpAddress]" \
-              --filters "Name=tag:Name,Values=backend-${CIRCLE_WORKFLOW_ID:0:7}" \
-              --output text)
-            echo ${BACKEND_IP}
+            BACKEND_PUBLIC_IP=$(aws ec2 describe-instances \
+            --query 'Reservations[*].Instances[*].PublicIpAddress' \
+            --output text --filters "Name=tag:Name,Values=backend-${CIRCLE_WORKFLOW_ID:0:7}")
             
-            export BACKEND=$(echo $BACKEND_IP | grep -o '[^ ]*$')
-            echo $BACKEND
-            export API_URL="http://${BACKEND}:3030"
-            echo "API_URL=${API_URL}"
-            
-            echo "Sleeping for 1 minute"
-            sleep 60
-            
-            if curl -v "${API_URL}/api/status" | grep "ok"
-            then
-              return 0
-            else
-              return 1
-            fi
+              export API_URL=http://${BACKEND_PUBLIC_IP}:3030
+              echo ${BACKEND_PUBLIC_IP}
+              echo backend-${CIRCLE_WORKFLOW_ID:0:7}
+              echo ${API_URL}
+              if curl  $API_URL/api/status | grep "ok"
+              then
+                exit 0
+              else
+                exit 1
+              fi
             
       - run:
           name: Frontend smoke test.
@@ -462,6 +455,38 @@ jobs:
             else
               exit 1
             fi
+      - destroy-environment
+      - revert-migrations
+      
+  cloudfront-update:
+    docker:
+      - image: cimg/base:stable
+
+    steps:
+      - checkout
+      - install_awscli
+      - install_nodejs
+      - run:
+          name: Save workflow id to kvdb
+          command: |
+          
+            export WorkflowID=$(aws cloudformation \
+            list-exports --query "Exports[?Name==\`WorkflowID\`].Value" \
+            --no-paginate --output text)
+            curl https://kvdb.io/GtGbDoEvT8RZb2L6PJkYPU/old_workflowid -d "${WorkflowID}"
+      - run:
+          name: Update cloudfront distribution
+          command: |
+            export OldWorkflowID=$(curl --insecure https://kvdb.io/GtGbDoEvT8RZb2L6PJkYPU/old_workflowid)
+            echo Old Workflow ID: $OldWorkflowID
+            
+            aws cloudformation deploy \
+            --template-file .circleci/files/cloudfront.yml \
+            --parameter-overrides WorkflowID="${CIRCLE_WORKFLOW_ID:0:7}" \
+            --stack-name InitialStack
+            
+            echo OLDWORKFLOWID:"${WorkflowID}"
+            echo CURRENTWORKFLOWID:"${CIRCLE_WORKFLOW_ID:0:7}" 
       - destroy-environment
       - revert-migrations
       # Here's where you will add some code to rollback on failure  
