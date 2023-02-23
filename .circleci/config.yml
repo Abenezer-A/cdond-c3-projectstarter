@@ -347,28 +347,27 @@ jobs:
                     
   deploy-backend:
     docker:
-      # Docker image here that supports Ansible
-      - image: python:3.10-alpine3.16
+      - image: cimg/base:stable
     steps:
-      # Checkout code from git
       - checkout
-      # Add ssh keys with fingerprint
+      - install_awscli
+      - install_nodejs
+      - install_ansible
       - add_ssh_keys:
-          fingerprints:
-            - "7d:58:7d:9c:17:1d:44:18:83:d4:1f:c6:9c:c3:b2:94"
-      
-      # attach workspace
+          fingerprints: ["7d:58:7d:9c:17:1d:44:18:83:d4:1f:c6:9c:c3:b2:94"]
       - attach_workspace:
           at: ~/
-          
+      
+      - restore_cache:
+          keys: [backend-build]
       - run:
           name: Install dependencies
           command: |
-            apk add --update --no-cache ansible tar gzip nodejs npm curl aws-cli
+            cd backend
+            npm install
       - run:
-          name: Deploy backend
+          name: Add .env vars to backend distro
           command: |
-          
             echo ENVIRONMENT=production > backend/.env
             echo TYPEORM_CONNECTION=$TYPEORM_CONNECTION >> backend/.env
             echo TYPEORM_ENTITIES=$TYPEORM_ENTITIES >> backend/.env
@@ -379,19 +378,19 @@ jobs:
             echo TYPEORM_DATABASE=$TYPEORM_DATABASE >> backend/.env
             echo TYPEORM_MIGRATIONS=$TYPEORM_MIGRATIONS >> "backend/.env"
             echo TYPEORM_MIGRATIONS_DIR=$TYPEORM_MIGRATIONS_DIR >> "backend/.env"
-            echo NODE_ENV=production >> "backend/.env" 
-            
+            echo NODE_ENV=production >> "backend/.env"     
+      - run:
+          name: Package backend
+          command: |
             # cd backend
-            # pwd
-            # ls -al
-            # npm install
             # npm run build
+            # tar -czf artifact.tar.gz dist/* package*
+            # pwd
+            # ls -a
             # cd ..
             # pwd
-            # ls -al
-            # # zip the directory
-            # tar -C backend -czvf artifact.tar.gz .
-            # cd .circleci/ansible
+            # ls -a
+            # cp backend/artifact.tar.gz .circleci/ansible/roles/deploy/files
             cd backend
             npm i
             npm run build
@@ -401,11 +400,17 @@ jobs:
             cd files
             tar -C ../../../backend -czvf artifact.tar.gz .
             cd ../
-            
-            echo "Contents of the inventory.txt file is -------"
+      - run:
+          name: Deploy backend
+          command: |
+            # export TYPEORM_MIGRATIONS_DIR=/migrations
+            # export TYPEORM_ENTITIES=/modules/domain/**/*.entity{.ts,.js}
+            # export TYPEORM_MIGRATIONS=/migrations/*.ts
+            cd .circleci/ansible
             cat inventory.txt
             ansible-playbook -i inventory.txt deploy-backend.yml
-            
+            pwd
+      
       - destroy-environment
       - revert-migrations
       # Here's where you will add some code to rollback on failure  
