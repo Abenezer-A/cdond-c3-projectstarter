@@ -180,9 +180,8 @@ jobs:
       <<: *ansible_image
       steps:
         - checkout
-        - add_ssh_keys:
-            fingerprints: ["96:9f:69:bf:88:57:05:8e:52:1a:07:e4:4a:f7:9f:f5"]
-        - attach_workspace:
+        - add_ssh_keys: "7d:58:7d:9c:17:1d:44:18:83:d4:1f:c6:9c:c3:b2:94"
+        - attach_workspace: 
             at: ~/
         - run:
             name: Install Dependencies
@@ -277,8 +276,8 @@ jobs:
     steps:
       - checkout
       - add_ssh_keys:
-ys:7d:58:7d:9c:17:1d:44:18:83:d4:1f:c6:9c:c3:b2:94"]
-t:["
+          fingerprints: 
+            - "7d:58:7d:9c:17:1d:44:18:83:d4:1f:c6:9c:c3:b2:94"
       - attach_workspace:
           at: ~/
       - restore_cache:
